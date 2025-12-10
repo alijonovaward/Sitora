@@ -15,27 +15,41 @@
 <!-- Audio player -->
 <audio id="audioPlayback" controls></audio>
 
+<!-- Real-time duration -->
+<p>Recording duration: <span id="duration">0.0</span> sec</p>
+
 <script>
 let mediaRecorder;
 let audioChunks = [];
+let startTime;
+let durationInterval;
 
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');
 const uploadBtn = document.getElementById('uploadBtn');
 const audioPlayback = document.getElementById('audioPlayback');
+const durationDisplay = document.getElementById('duration');
 
 startBtn.addEventListener('click', async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder = new MediaRecorder(stream);
     audioChunks = [];
+    startTime = Date.now();
+
+    // Duration update
+    durationInterval = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        durationDisplay.textContent = elapsed.toFixed(1);
+    }, 100);
 
     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
 
     mediaRecorder.onstop = () => {
+        clearInterval(durationInterval); // intervalni to‘xtatish
         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
         const audioUrl = URL.createObjectURL(audioBlob);
         audioPlayback.src = audioUrl;
-        uploadBtn.disabled = false; // Upload tugmasini yoqish
+        uploadBtn.disabled = false;
     };
 
     mediaRecorder.start();
@@ -65,6 +79,7 @@ uploadBtn.addEventListener('click', () => {
     .then(data => {
         alert(data.message);
         uploadBtn.disabled = true;
+        durationDisplay.textContent = "0.0"; // durationni reset
     })
     .catch(err => console.error(err));
 });
