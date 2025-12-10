@@ -3,16 +3,71 @@
 {% block title %}Audios{% endblock %}
 
 {% block content %}
-<h1>Audios{% if status %} - {{ status|title }}{% endif %}</h1>
-<ul>
+<h1 style="text-align: center; margin-bottom: 20px;">
+    Audios{% if status %} - {{ status|title }}{% endif %}
+</h1>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    ul.audio-list {
+        list-style: none;
+        padding: 0;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    ul.audio-list li {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    ul.audio-list li strong {
+        font-weight: bold;
+        color: #333;
+    }
+
+    audio {
+        width: 100%;
+        outline: none;
+        border-radius: 8px;
+        background-color: #eee;
+    }
+
+    .audio-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #555;
+    }
+
+</style>
+
+<ul class="audio-list">
     {% for audio in audios %}
         <li>
             {% if audio.audio_file %}
-                {{ audio.audio_file.name }}
+                <strong>{{ audio.audio_file.name }}</strong>
+                <audio controls preload="auto">
+                    <source src="{{ audio.audio_file.url }}" type="audio/wav">
+                    Your browser does not support the audio element.
+                </audio>
             {% else %}
                 No file
             {% endif %}
-             - Status: {{ audio.status }} - Duration: {{ audio.duration }}
+            <div class="audio-info">
+                <span>Status: {{ audio.status }}</span>
+                <span>Duration: {{ audio.duration }}</span>
+            </div>
         </li>
     {% empty %}
         <li>No audios found.</li>
