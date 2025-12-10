@@ -42,3 +42,7 @@ def dashboard_view(request):
         'audios': audios,
     }
     return render(request, "zapp/dashboard.html", context)
+
+@login_required
+def audio_view(request, status=None, user_id=None):
+    pass

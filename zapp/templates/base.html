@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My App{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f0f2f5;
+        }
+        nav {
+            background: #4CAF50;
+            padding: 10px 20px;
+        }
+        nav a {
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'audio' 'pending' request.user.id %}">Pending</a>
+        <a href="{% url 'audio' 'processing' request.user.id %}">Processing</a>
+        <a href="{% url 'audio' 'finished' request.user.id %}">Finished</a>
+        <a href="{% url 'audio' 'done' request.user.id %}">Done</a>
+        <a href="{% url 'audio' 'failed' request.user.id %}">Failed</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <div class="container">
+        {% block content %}
+        <!-- Har sahifa content shu yerda chiqadi -->
+        {% endblock %}
+    </div>
+</body>
+</html>

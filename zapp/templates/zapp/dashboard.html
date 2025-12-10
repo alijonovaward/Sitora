@@ -1,26 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Welcome, {{ user.username }}!</h1>
-    <p>Full Name: {{ profile.full_name }}</p>
-    <p>Role: {{ profile.role }}</p>
+{% extends 'base.html' %}
 
-    <h2>Your Audios:</h2>
-    <ul>
-        {% for audio in audios %}
-            <li>
-                {{ audio.audio_file.name }} -
-                Status: {{ audio.status }} -
-                Duration: {{ audio.duration }}
-            </li>
-        {% empty %}
-            <li>No audios found.</li>
-        {% endfor %}
-    </ul>
+{% block title %}Dashboard{% endblock %}
 
-    <a href="{% url 'logout' %}">Logout</a>
-</body>
-</html>
+{% block content %}
+<h1>Welcome, {{ user.username }}!</h1>
+<p>Full Name: {{ profile.full_name }}</p>
+<p>Role: {{ profile.role }}</p>
+
+<h2>Your Audios:</h2>
+<ul>
+
+</ul>
+{% endblock %}
