@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Audios{% endblock %}
+
+{% block content %}
+<h1>Audios{% if status %} - {{ status|title }}{% endif %}</h1>
+<ul>
+    {% for audio in audios %}
+        <li>
+            {% if audio.audio_file %}
+                {{ audio.audio_file.name }}
+            {% else %}
+                No file
+            {% endif %}
+             - Status: {{ audio.status }} - Duration: {{ audio.duration }}
+        </li>
+    {% empty %}
+        <li>No audios found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

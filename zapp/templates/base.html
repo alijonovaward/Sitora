@@ -31,11 +31,11 @@
 <body>
     <nav>
         <a href="{% url 'dashboard' %}">Dashboard</a>
-        <a href="{% url 'audio' 'pending' request.user.id %}">Pending</a>
-        <a href="{% url 'audio' 'processing' request.user.id %}">Processing</a>
-        <a href="{% url 'audio' 'finished' request.user.id %}">Finished</a>
-        <a href="{% url 'audio' 'done' request.user.id %}">Done</a>
-        <a href="{% url 'audio' 'failed' request.user.id %}">Failed</a>
+        <a href="{% url 'audio' 'pending' %}">Pending</a>
+        <a href="{% url 'audio' 'processing' %}">Processing</a>
+        <a href="{% url 'audio' 'finished' %}">Finished</a>
+        <a href="{% url 'audio' 'done' %}">Done</a>
+        <a href="{% url 'audio' 'failed' %}">Failed</a>
         <a href="{% url 'logout' %}">Logout</a>
     </nav>
 

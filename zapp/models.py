@@ -15,7 +15,7 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     full_name = models.CharField(max_length=100, null=True, blank=True)
     can_write_text = models.BooleanField(default=False)
-
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
     def __str__(self):
         return f"{self.full_name} ({self.user.username})"
 

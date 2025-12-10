@@ -44,5 +44,27 @@ def dashboard_view(request):
     return render(request, "zapp/dashboard.html", context)
 
 @login_required
-def audio_view(request, status=None, user_id=None):
-    pass
+def audio_view(request, status=None):
+    profile = None
+    audios = None
+
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        pass
+
+    if profile and profile.role == 'user':
+        audios = Audio.objects.filter(audio_author=request.user)
+    else:
+        audios = Audio.objects.all()
+
+    if status:
+        audios = audios.filter(status=status)
+
+    audios = audios.order_by('-created_at')
+
+    context = {
+        'audios': audios,
+        'status': status,
+    }
+    return render(request, "zapp/audio_list.html", context)
