@@ -6,4 +6,67 @@
 <h1>Welcome, {{ user.username }}!</h1>
 <p>Full Name: {{ profile.full_name }}</p>
 <p>Role: {{ profile.role }}</p>
+
+<!-- Audio record buttons -->
+<button id="startBtn">Start Recording</button>
+<button id="stopBtn" disabled>Stop Recording</button>
+<button id="uploadBtn" disabled>Upload Recording</button>
+
+<!-- Audio player -->
+<audio id="audioPlayback" controls></audio>
+
+<script>
+let mediaRecorder;
+let audioChunks = [];
+
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const uploadBtn = document.getElementById('uploadBtn');
+const audioPlayback = document.getElementById('audioPlayback');
+
+startBtn.addEventListener('click', async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+    mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        audioPlayback.src = audioUrl;
+        uploadBtn.disabled = false; // Upload tugmasini yoqish
+    };
+
+    mediaRecorder.start();
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+});
+
+stopBtn.addEventListener('click', () => {
+    mediaRecorder.stop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+});
+
+uploadBtn.addEventListener('click', () => {
+    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+    const formData = new FormData();
+    formData.append('audio_file', audioBlob, 'recording.wav');
+
+    fetch("{% url 'upload_audio' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        uploadBtn.disabled = true;
+    })
+    .catch(err => console.error(err));
+});
+</script>
 {% endblock %}

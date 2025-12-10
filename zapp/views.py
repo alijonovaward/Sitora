@@ -1,7 +1,10 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from pydub import AudioSegment
+
 from .models import Audio, Profile
 
 
@@ -68,3 +71,34 @@ def audio_view(request, status=None):
         'status': status,
     }
     return render(request, "zapp/audio_list.html", context)
+
+
+@login_required
+def upload_audio(request):
+    if request.method == "POST" and request.FILES.get('audio_file'):
+        audio_file = request.FILES['audio_file']
+
+        # Audio instance yaratish
+        audio_instance = Audio(audio_author=request.user)
+        audio_instance.audio_file.save(f"{request.user.username}_recording.wav", audio_file)
+        audio_instance.save()
+
+        # Duration hisoblash (pydub yordamida)
+        try:
+            audio_path = audio_instance.audio_file.path
+            audio_segment = AudioSegment.from_file(audio_path)
+            duration_sec = round(len(audio_segment) / 1000, 1)  # sekundlarda
+            audio_instance.duration = duration_sec
+            audio_instance.save(update_fields=['duration'])
+
+            # Profilga jami duration qo'shish
+            profile = request.user.profile
+            profile.total_audio_duration += duration_sec
+            profile.save(update_fields=['total_audio_duration'])
+
+        except Exception as e:
+            return JsonResponse({'message': f'Error processing audio: {str(e)}'}, status=500)
+
+        return JsonResponse({'message': 'Audio uploaded and duration calculated!'})
+
+    return JsonResponse({'message': 'No file uploaded.'}, status=400)
