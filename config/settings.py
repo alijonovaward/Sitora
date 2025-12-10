@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d@xotp2$b*z!$*&%w0vtt3#ni)d3+g(=#45b3%je3*r1q8wb$*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -103,10 +103,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+STATIC_URL = '/static/'
+
+# Абсолютный путь к директории, где будут собираться статические файлы
+STATIC_ROOT = BASE_DIR / 'static'
