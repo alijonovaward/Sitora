@@ -1,8 +1,8 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from pydub import AudioSegment
 
 from .models import Audio, Profile
@@ -102,3 +102,28 @@ def upload_audio(request):
         return JsonResponse({'message': 'Audio uploaded and duration calculated!'})
 
     return JsonResponse({'message': 'No file uploaded.'}, status=400)
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)  # faqat admin
+def update_audio_status(request, audio_id):
+    status_url = 'pending'
+    if request.method == 'POST':
+        audio = get_object_or_404(Audio, id=audio_id)
+        new_status = request.POST.get('status')
+        status_url = request.POST.get('status_url')
+        if new_status == 'approved':
+            if audio.status == 'pending':
+                audio.status = 'processing'
+            elif audio.status == 'finished':
+                audio.status = 'done'
+        elif new_status == 'rejected':
+            if audio.status == 'pending':
+                audio.status = 'failed'
+            elif audio.status == 'processing':
+                audio.status = 'pending'
+            elif audio.status == 'finished':
+                audio.status = 'processing'
+                audio.transcript = ""
+
+        audio.save()
+    return redirect('audio', status=status_url)

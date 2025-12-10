@@ -48,7 +48,21 @@
         justify-content: space-between;
         font-size: 14px;
         color: #555;
+        align-items: center;
     }
+
+    .status-buttons button {
+        margin-left: 5px;
+        padding: 4px 8px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .status-approved { background-color: #4CAF50; color: white; }
+    .status-pending { background-color: #FFC107; color: white; }
+    .status-rejected { background-color: #F44336; color: white; }
 
 </style>
 
@@ -66,7 +80,24 @@
             {% endif %}
             <div class="audio-info">
                 <span>Status: {{ audio.status }}</span>
-                <span>Duration: {{ audio.duration }}</span>
+
+                {% if user.is_staff %}
+                <!-- Admin status buttons -->
+                <div class="status-buttons">
+                    <form action="{% url 'update_audio_status' audio.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="approved">
+                        <input type="hidden" name="status_url" value="{{ status }}">
+                        <button type="submit" class="status-approved">Approve</button>
+                    </form>
+                    <form action="{% url 'update_audio_status' audio.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="rejected">
+                        <input type="hidden" name="status_url" value="{{ status }}">
+                        <button type="submit" class="status-rejected">Reject</button>
+                    </form>
+                </div>
+                {% endif %}
             </div>
         </li>
     {% empty %}
