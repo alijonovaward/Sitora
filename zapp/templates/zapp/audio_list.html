@@ -70,7 +70,7 @@
     {% for audio in audios %}
         <li>
             {% if audio.audio_file %}
-                <strong>{{ audio.audio_file.name }}</strong>
+                <strong>{{ audio.audio_file.name }} ({{ audio.audio_author.username }}) {{ audio.created_at }}</strong>
                 <audio controls preload="auto">
                     <source src="{{ audio.audio_file.url }}" type="audio/wav">
                     Your browser does not support the audio element.
@@ -94,7 +94,11 @@
             {% endif %}
             <div class="audio-info">
                 <span>Status: {{ audio.status }}</span>
-
+                {% if audio.transcript %}
+                <span>{{ audio.transcript }}</span>
+                {% else %}
+                No text
+                {% endif %}
                 {% if user.is_staff %}
                 <!-- Admin status buttons -->
                 <div class="status-buttons">
