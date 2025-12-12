@@ -133,12 +133,13 @@ def add_transcript(request, audio_id = None):
         status = "processing"
         if request.method == "POST":
             transcript = request.POST.get('transcript')
-            print(transcript)
+            text_author = request.user
             status = request.POST.get('status')
             audio = get_object_or_404(Audio, id=audio_id)
             if transcript:
                 audio.transcript = transcript
                 audio.status = 'finished'
+                audio.transcript_author = text_author
                 audio.save()
         return redirect('audio', status=status)
     except Exception as e:
