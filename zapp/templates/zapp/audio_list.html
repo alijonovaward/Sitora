@@ -93,12 +93,13 @@
                 No file
             {% endif %}
             <div class="audio-info">
-                <span>Status: {{ audio.status }}</span>
-                {% if audio.transcript %}
-                <span>{{ audio.transcript }}</span>
-                {% else %}
-                No text
-                {% endif %}
+                <div>
+                    {% if audio.transcript %}
+                        {{ audio.transcript }}
+                    {% else %}
+                        No text
+                    {% endif %}
+                </div>
                 {% if user.is_staff %}
                 <!-- Admin status buttons -->
                 <div class="status-buttons">
