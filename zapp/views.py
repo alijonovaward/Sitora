@@ -127,3 +127,19 @@ def update_audio_status(request, audio_id):
 
         audio.save()
     return redirect('audio', status=status_url)
+
+def add_transcript(request, audio_id = None):
+    try:
+        status = "processing"
+        if request.method == "POST":
+            transcript = request.POST.get('transcript')
+            print(transcript)
+            status = request.POST.get('status')
+            audio = get_object_or_404(Audio, id=audio_id)
+            if transcript:
+                audio.transcript = transcript
+                audio.status = 'finished'
+                audio.save()
+        return redirect('audio', status=status)
+    except Exception as e:
+        pass

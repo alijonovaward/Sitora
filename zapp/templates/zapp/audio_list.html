@@ -75,6 +75,20 @@
                     <source src="{{ audio.audio_file.url }}" type="audio/wav">
                     Your browser does not support the audio element.
                 </audio>
+            {% if status == 'processing' %}
+                <div class="status-buttons">
+                   <form action="{% url 'add_transcript' audio.id %}" method="post">
+                        {% csrf_token %}
+                       <input
+                            name="transcript"
+                            placeholder="Enter transcript..."
+                            style="width: 95%; padding: 10px; font-size:16px; border-radius:8px; border:1px solid #ccc;"
+                        >
+                        <input type="hidden" name="status" value="{{ status }}">
+                        <button type="submit" class="status-pending">Send</button>
+                    </form>
+                </div>
+            {% endif %}
             {% else %}
                 No file
             {% endif %}
@@ -96,6 +110,7 @@
                         <input type="hidden" name="status_url" value="{{ status }}">
                         <button type="submit" class="status-rejected">Reject</button>
                     </form>
+
                 </div>
                 {% endif %}
             </div>
