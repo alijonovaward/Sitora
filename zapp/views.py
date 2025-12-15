@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -65,10 +66,13 @@ def audio_view(request, status=None):
         audios = audios.filter(status=status)
 
     audios = audios.order_by('-created_at')
+    total_duration = int(audios.aggregate(total=Sum('duration'))['total'] or 0)
 
     context = {
         'audios': audios,
         'status': status,
+        'count': audios.count(),
+        'total_duration': total_duration,
     }
     return render(request, "zapp/audio_list.html", context)
 
