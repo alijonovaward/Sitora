@@ -236,9 +236,9 @@ def get_transcript(request, audio_id=None):
             return redirect('audio', status=status_url)
 
         # Audio transcript update
-
-        audio.transcript = transcript
-        audio.save(update_fields=['transcript', 'status'])
+        if not audio.transcript:
+            audio.transcript = transcript
+            audio.save(update_fields=['transcript', 'status'])
 
         # S2TRequest status update
         s2t_request.status = 'finished'
