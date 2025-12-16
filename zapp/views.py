@@ -224,7 +224,7 @@ def get_transcript(request, audio_id=None):
 
     try:
         response = requests.get(url, headers=headers, timeout=30)
-        response.raise_for_status()  # 4xx yoki 5xx xatolarni Exception qiladi
+        response.raise_for_status()
         data = response.json()
         transcript = data.get('transcript', "No transcript")
 
@@ -233,9 +233,9 @@ def get_transcript(request, audio_id=None):
             return redirect('audio', status=status_url)
 
         # Audio transcript update
-        if not audio.transcript:
-            audio.transcript = transcript
-            audio.save(update_fields=['transcript', 'status'])
+
+        audio.transcript = transcript
+        audio.save(update_fields=['transcript', 'status'])
 
         # S2TRequest status update
         s2t_request.status = 'finished'
