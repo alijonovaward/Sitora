@@ -209,7 +209,7 @@ def get_transcript(request, audio_id = None):
 
         s2t_request = audio.s2t_request
 
-        transcript_id = s2t_request.id
+        transcript_id = s2t_request.task_id
         api_key = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
 
         url = f"https://back.aisha.group/api/v2/stt/get/{transcript_id}/"
