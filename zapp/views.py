@@ -5,8 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from pydub import AudioSegment
+import requests
 
-from .models import Audio, Profile
+from .models import Audio, Profile, S2TRequest
 
 
 def login_view(request):
@@ -153,6 +154,48 @@ def send_transcript(request, audio_id = None):
     try:
         audio = get_object_or_404(Audio, id=audio_id)
         status_url = request.POST.get('status_url')
+
+        url = "https://back.aisha.group/api/v2/stt/post/"
+        api_key = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
+
+        audio_path = audio.audio_file.path
+
+        with open(audio_path, 'rb') as f:
+            files = {
+                'audio': f
+            }
+
+            data = {
+                'title': 'Weekly sync',
+                'language': 'uz',
+                'webhook_notification_url': 'https://example.com/webhook',
+                'has_diarization': False
+            }
+
+            headers = {
+                'x-api-key': api_key
+            }
+
+            response = requests.post(
+                url,
+                headers=headers,
+                files=files,
+                data=data,
+                timeout=60
+            )
+
+        response.raise_for_status()
+        data_json = response.json()
+        task_id = data_json.get('id')
+
+        s2t_request, created = S2TRequest.objects.get_or_create(
+            audio=audio,
+            defaults={
+                'status': 'pending',
+                'task_id': task_id
+            }
+        )
+
         return redirect('audio', status=status_url)
     except Exception as e:
         pass
@@ -161,6 +204,9 @@ def get_transcript(request, audio_id = None):
     try:
         audio = get_object_or_404(Audio, id=audio_id)
         status_url = request.POST.get('status_url')
+
+
+
         return redirect('audio', status=status_url)
     except Exception as e:
         pass
