@@ -64,6 +64,8 @@
     .status-approved { background-color: #4CAF50; color: white; }
     .status-pending { background-color: #FFC107; color: white; }
     .status-rejected { background-color: #F44336; color: white; }
+    .status-get {background-color: #4c61af; color: white;}
+    .status-send {background-color: #d60606; color: white;}
 
 </style>
 
@@ -116,7 +118,20 @@
                         <input type="hidden" name="status_url" value="{{ status }}">
                         <button type="submit" class="status-rejected">Reject</button>
                     </form>
-
+                    <form action="{% url 'get_transcript' audio.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="rejected">
+                        <input type="hidden" name="status_url" value="{{ status }}">
+                        <button type="submit" class="status-get">Get text</button>
+                    </form>
+                    {% if user.profile.role == 'superadmin' %}
+                    <form action="{% url 'send_transcript' audio.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="rejected">
+                        <input type="hidden" name="status_url" value="{{ status }}">
+                        <button type="submit" class="status-send">Send Aisha</button>
+                    </form>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>

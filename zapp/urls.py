@@ -10,4 +10,7 @@ urlpatterns = [
 
     path('audio/<int:audio_id>/update_status/', views.update_audio_status, name='update_audio_status'),
     path('transcript/<int:audio_id>/', views.add_transcript, name='add_transcript'),
+
+    path('get_transcript/<int:audio_id>/', views.send_transcript, name='get_transcript'),
+    path('send_transcript/<int:audio_id>/', views.send_transcript, name='send_transcript'),
 ]

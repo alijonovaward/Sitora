@@ -148,3 +148,19 @@ def add_transcript(request, audio_id = None):
         return redirect('audio', status=status)
     except Exception as e:
         pass
+
+def send_transcript(request, audio_id = None):
+    try:
+        audio = get_object_or_404(Audio, id=audio_id)
+        status_url = request.POST.get('status_url')
+        return redirect('audio', status=status_url)
+    except Exception as e:
+        pass
+
+def get_transcript(request, audio_id = None):
+    try:
+        audio = get_object_or_404(Audio, id=audio_id)
+        status_url = request.POST.get('status_url')
+        return redirect('audio', status=status_url)
+    except Exception as e:
+        pass

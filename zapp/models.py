@@ -61,3 +61,18 @@ class Audio(models.Model):
     def __str__(self):
         file_name = self.audio_file.name if self.audio_file else "No file"
         return f"{file_name} ({self.audio_author})"
+
+class S2TRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('finished', 'Finished'),
+    )
+    audio = models.OneToOneField(Audio, on_delete=models.CASCADE, related_name='s2t_request')
+    task_id = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.audio} ({self.task_id})"
