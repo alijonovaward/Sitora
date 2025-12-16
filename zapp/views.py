@@ -203,12 +203,28 @@ def send_transcript(request, audio_id = None):
         pass
 
 def get_transcript(request, audio_id = None):
+    status_url = request.POST.get('status_url')
     try:
         audio = get_object_or_404(Audio, id=audio_id)
-        status_url = request.POST.get('status_url')
 
+        s2t_request = audio.s2t_request
 
+        transcript_id = s2t_request.id
+        api_key = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
+
+        url = f"https://back.aisha.group/api/v2/stt/get/{transcript_id}/"
+
+        headers = {
+            'x-api-key': api_key
+        }
+
+        response = requests.get(url, headers=headers)
+
+        transcript = response.json()['transcript']
+
+        audio.transcript = transcript
+        audio.save()
 
         return redirect('audio', status=status_url)
     except Exception as e:
-        pass
+        return redirect('audio', status=status_url)
