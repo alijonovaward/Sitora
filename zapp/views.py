@@ -195,6 +195,8 @@ def send_transcript(request, audio_id = None):
                 'task_id': task_id
             }
         )
+        audio.status = 'finished'
+        audio.save()
 
         return redirect('audio', status=status_url)
     except Exception as e:
