@@ -211,6 +211,7 @@ def get_transcript(request, audio_id=None):
 
     try:
         s2t_request = audio.s2t_request
+        print(s2t_request)
     except ObjectDoesNotExist:
         messages.error(request, "STT request topilmadi.")
         return redirect('audio', status=status_url)
@@ -224,6 +225,8 @@ def get_transcript(request, audio_id=None):
 
     try:
         response = requests.get(url, headers=headers, timeout=30)
+        print(response.json())
+        response.raise_for_status()
         response.raise_for_status()
         data = response.json()
         transcript = data.get('transcript', "No transcript")
