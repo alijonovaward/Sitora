@@ -222,8 +222,9 @@ def get_transcript(request, audio_id = None):
 
         transcript = response.json()['transcript']
 
-        audio.transcript = transcript
-        audio.save()
+        if not audio.transcript:
+            audio.transcript = transcript
+            audio.save()
 
         return redirect('audio', status=status_url)
     except Exception as e:
