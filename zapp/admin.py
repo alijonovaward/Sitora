@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Profile, Audio
+from .models import Profile, Audio, S2TRequest
 
 
 @admin.register(Profile)
@@ -28,3 +28,8 @@ class AudioAdmin(admin.ModelAdmin):
 
     audio_player.short_description = "Audio"
 
+@admin.register(S2TRequest)
+class S2TRequestAdmin(admin.ModelAdmin):
+    list_display = ('id', 'task_id', 'status', 'created_at', 'updated_at')
+    search_fields = ('task_id', 'created_at', 'updated_at')
+    list_filter = ('status', 'created_at', 'updated_at')
