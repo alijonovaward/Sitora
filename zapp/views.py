@@ -226,14 +226,14 @@ def get_transcript(request, audio_id=None):
         response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()  # 4xx yoki 5xx xatolarni Exception qiladi
         data = response.json()
-        transcript = data.get('transcript')
+        transcript = data.get('transcript', "No transcript")
 
         if not transcript:
             messages.warning(request, "Transcript hali tayyor emas.")
             return redirect('audio', status=status_url)
 
         # Audio transcript update
-        if audio.transcript == "":
+        if not audio.transcript:
             audio.transcript = transcript
             audio.save(update_fields=['transcript', 'status'])
 
