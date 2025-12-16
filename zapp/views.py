@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from pydub import AudioSegment
 import requests
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Audio, Profile, S2TRequest
 
@@ -202,30 +203,50 @@ def send_transcript(request, audio_id = None):
     except Exception as e:
         pass
 
-def get_transcript(request, audio_id = None):
+API_KEY = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
+
+def get_transcript(request, audio_id=None):
     status_url = request.POST.get('status_url')
+    audio = get_object_or_404(Audio, id=audio_id)
+
     try:
-        audio = get_object_or_404(Audio, id=audio_id)
-
         s2t_request = audio.s2t_request
+    except ObjectDoesNotExist:
+        messages.error(request, "STT request topilmadi.")
+        return redirect('audio', status=status_url)
 
-        transcript_id = s2t_request.task_id
-        api_key = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
+    if not s2t_request.task_id:
+        messages.error(request, "Task ID mavjud emas.")
+        return redirect('audio', status=status_url)
 
-        url = f"https://back.aisha.group/api/v2/stt/get/{transcript_id}/"
+    url = f"https://back.aisha.group/api/v2/stt/get/{s2t_request.task_id}/"
+    headers = {'x-api-key': API_KEY}
 
-        headers = {
-            'x-api-key': api_key
-        }
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()  # 4xx yoki 5xx xatolarni Exception qiladi
+        data = response.json()
+        transcript = data.get('transcript')
 
-        response = requests.get(url, headers=headers)
+        if not transcript:
+            messages.warning(request, "Transcript hali tayyor emas.")
+            return redirect('audio', status=status_url)
 
-        transcript = response.json()['transcript']
-
-        if not audio.transcript:
+        # Audio transcript update
+        if audio.transcript == "":
             audio.transcript = transcript
-            audio.save()
+            audio.save(update_fields=['transcript', 'status'])
 
-        return redirect('audio', status=status_url)
+        # S2TRequest status update
+        s2t_request.status = 'finished'
+        s2t_request.save(update_fields=['status'])
+
+        messages.success(request, "Transcript muvaffaqiyatli olindi.")
+
+    except requests.exceptions.RequestException as e:
+        messages.error(request, f"API so‘rovida xato: {str(e)}")
+
     except Exception as e:
-        return redirect('audio', status=status_url)
+        messages.error(request, f"Noma’lum xato: {str(e)}")
+
+    return redirect('audio', status=status_url)
