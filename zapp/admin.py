@@ -14,7 +14,7 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(Audio)
 class AudioAdmin(admin.ModelAdmin):
     list_display = ('id', 'audio_author', 'transcript_author', 'status', 'duration', 'audio_player', 'transcript', 'created_at')
-    search_fields = ('audio_author__username', 'transcript')
+    search_fields = ('id', 'audio_author__username', 'transcript')
     list_filter = ('status', 'created_at')
     readonly_fields = ('created_at', 'updated_at')
 
@@ -30,6 +30,6 @@ class AudioAdmin(admin.ModelAdmin):
 
 @admin.register(S2TRequest)
 class S2TRequestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'task_id', 'status', 'created_at', 'updated_at')
+    list_display = ('id', 'audio_id','task_id', 'status', 'created_at', 'updated_at')
     search_fields = ('task_id', 'created_at', 'updated_at')
     list_filter = ('status', 'created_at', 'updated_at')
