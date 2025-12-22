@@ -254,7 +254,7 @@ def get_transcript(request, audio_id=None):
 
     return redirect('audio', status=status_url)
 
-def get_transcript(request, task_id=None):
+def get_transcript_api(request, task_id=None):
     data = {
         'task_id': task_id,
         'status': 'processing',
