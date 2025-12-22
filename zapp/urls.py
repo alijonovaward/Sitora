@@ -13,4 +13,5 @@ urlpatterns = [
 
     path('get_transcript/<int:audio_id>/', views.get_transcript, name='get_transcript'),
     path('send_transcript/<int:audio_id>/', views.send_transcript, name='send_transcript'),
+    path('api/v1/get/<int:task_id>/', views.get_transcript, name='get_transcript'),
 ]

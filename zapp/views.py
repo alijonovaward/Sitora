@@ -253,3 +253,12 @@ def get_transcript(request, audio_id=None):
         messages.error(request, f"Noma’lum xato: {str(e)}")
 
     return redirect('audio', status=status_url)
+
+def get_transcript(request, task_id=None):
+    data = {
+        'task_id': task_id,
+        'status': 'processing',
+        'transcript': 'No transcript',
+    }
+
+    return JsonResponse(data,safe=False)
