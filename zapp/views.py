@@ -151,6 +151,57 @@ def add_transcript(request, audio_id = None):
     except Exception as e:
         pass
 
+def send_all(request):
+    status_url = 'processing'
+
+    url = "https://back.aisha.group/api/v2/stt/post/"
+    api_key = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
+
+    audios = Audio.objects.filter(status='processing').order_by('-id')[:10]
+
+    for audio in audios:
+        audio_path = audio.audio_file.path
+
+        with open(audio_path, 'rb') as f:
+            files = {
+                'audio': f
+            }
+
+            data = {
+                'title': 'Weekly sync',
+                'language': 'uz',
+                'webhook_notification_url': 'https://example.com/webhook',
+                'has_diarization': False
+            }
+
+            headers = {
+                'x-api-key': api_key
+            }
+
+            response = requests.post(
+                url,
+                headers=headers,
+                files=files,
+                data=data,
+                timeout=60
+            )
+
+        response.raise_for_status()
+        data_json = response.json()
+        task_id = data_json.get('id')
+
+        s2t_request, created = S2TRequest.objects.get_or_create(
+            audio=audio,
+            defaults={
+                'status': 'pending',
+                'task_id': task_id
+            }
+        )
+        audio.status = 'finished'
+        audio.save()
+
+    return redirect('audio', status=status_url)
+
 def send_transcript(request, audio_id = None):
     try:
         audio = get_object_or_404(Audio, id=audio_id)

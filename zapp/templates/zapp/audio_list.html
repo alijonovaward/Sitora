@@ -6,6 +6,13 @@
 <h1 style="text-align: center; margin-bottom: 20px;">
     Audios{% if status %} - {{ status|title }}{% endif %}
     Jami {{ count }} ta audio {{ total_duration }} s
+    {% if user.profile.role == 'superadmin' and status == 'processing' %}
+        <form action="{% url 'send_all'  %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="{{ status }}">
+            <button type="submit" class="status-pending">Send 10</button>
+        </form>
+    {% endif %}
 </h1>
 
 <style>
