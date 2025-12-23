@@ -10,7 +10,7 @@
         <form action="{% url 'send_all'  %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="status" value="{{ status }}">
-            <button type="submit" class="status-pending">Send 10</button>
+            <button type="submit" class="status-send">Send 10</button>
         </form>
     {% endif %}
 </h1>
