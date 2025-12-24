@@ -36,12 +36,6 @@ def dashboard_view(request):
     user = request.user
     profile = getattr(user, 'profile', None)
 
-    # # Agar user oddiy foydalanuvchi bo‘lsa, faqat uning audiolari
-    # if profile and profile.user:
-    #     audios = Audio.objects.filter(audio_author=user).order_by('-created_at')
-    # else:
-    #     audios = Audio.objects.all().order_by('-created_at')
-
     context = {
         'user': user,
         'profile': profile,
