@@ -31,5 +31,5 @@ class AudioAdmin(admin.ModelAdmin):
 @admin.register(S2TRequest)
 class S2TRequestAdmin(admin.ModelAdmin):
     list_display = ('id', 'audio_id','task_id', 'status', 'created_at', 'updated_at')
-    search_fields = ('task_id', 'audio_id', 'created_at', 'updated_at')
+    search_fields = ('task_id', 'audio__id', 'created_at', 'updated_at')
     list_filter = ('status', 'created_at', 'updated_at')
