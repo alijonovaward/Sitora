@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from pydub import AudioSegment
 import requests
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 
 from .models import Audio, Profile, S2TRequest
 
@@ -64,8 +65,13 @@ def audio_view(request, status=None):
     audios = audios.order_by('-created_at')
     total_duration = int(audios.aggregate(total=Sum('duration'))['total'] or 0)
 
+    # Pagination qismi
+    paginator = Paginator(audios, 10)  # Har bir sahifada 10 tadan audio
+    page_number = request.GET.get('page')  # URL'dan sahifa raqamini olish (?page=2 kabi)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'audios': audios,
+        'audios': page_obj,
         'status': status,
         'count': audios.count(),
         'total_duration': total_duration,
