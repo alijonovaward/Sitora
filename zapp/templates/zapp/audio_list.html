@@ -150,3 +150,49 @@
     {% endfor %}
 </ul>
 {% endblock %}
+{% if audios.has_other_pages %}
+<div class="pagination-container">
+    <div class="pagination">
+        {% if audios.has_previous %}
+            {# Status parametrini saqlab qolgan holda orqaga qaytish #}
+            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page=1">&laquo; birinchi</a>
+            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page={{ audios.previous_page_number }}">oldingi</a>
+        {% endif %}
+
+        <span class="current">
+            Sahifa {{ audios.number }} / {{ audios.paginator.num_pages }}
+        </span>
+
+        {% if audios.has_next %}
+            {# Status parametrini saqlab qolgan holda keyingi sahifaga o'tish #}
+            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page={{ audios.next_page_number }}">keyingi</a>
+            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page={{ audios.paginator.num_pages }}">oxirgi &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<style>
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin: 30px 0;
+    }
+    .pagination a, .pagination span {
+        padding: 10px 15px;
+        margin: 0 4px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #333;
+        border-radius: 6px;
+        background-color: #fff;
+    }
+    .pagination a:hover {
+        background-color: #4c61af;
+        color: white;
+    }
+    .pagination .current {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>
