@@ -260,19 +260,19 @@ def send_transcript(request, audio_id = None):
         data_json = response.json()
         task_id = data_json.get('id')
 
-        s2t_request = S2TRequest.objects.create(
+        s2t_request, created = S2TRequest.objects.get_or_create(
             audio=audio,
-            status='pending',
-            task_id=task_id
+            defaults={
+                'status': 'pending',
+                'task_id': task_id
+            }
         )
-
         audio.status = 'finished'
         audio.save()
 
         return redirect('audio', status=status_url)
     except Exception as e:
         pass
-    return redirect('audio', status='processing')
 
 API_KEY = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
 
