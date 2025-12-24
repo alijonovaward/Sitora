@@ -279,6 +279,7 @@ API_KEY = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
 def get_transcript(request, audio_id=None):
     status_url = request.POST.get('status_url')
     audio = get_object_or_404(Audio, id=audio_id)
+    current_page = request.POST.get('page', 1)
 
     try:
         s2t_request = audio.s2t_request
@@ -323,7 +324,13 @@ def get_transcript(request, audio_id=None):
     except Exception as e:
         messages.error(request, f"Noma’lum xato: {str(e)}")
 
-    return redirect('audio', status=status_url)
+        # redirect qilishda page parametrini ham qo'shamiz
+        from django.urls import reverse
+        from urllib.parse import urlencode
+
+        base_url = reverse('audio', kwargs={'status': status_url})
+        query_string = urlencode({'page': current_page})
+        return redirect(f"{base_url}?{query_string}")
 
 def get_transcript_api(request, task_id=None):
     data = {
