@@ -148,6 +148,7 @@ def update_audio_status(request, audio_id):
 def add_transcript(request, audio_id = None):
     try:
         status = "processing"
+        current_page = request.POST.get('page', 1)
         if request.method == "POST":
             transcript = request.POST.get('transcript')
             text_author = request.user
@@ -158,9 +159,17 @@ def add_transcript(request, audio_id = None):
                 audio.status = 'finished'
                 audio.transcript_author = text_author
                 audio.save()
-        return redirect('audio', status=status)
+
+                # redirect qilishda page parametrini ham qo'shamiz
+                from django.urls import reverse
+                from urllib.parse import urlencode
+
+                base_url = reverse('audio', kwargs={'status': status})
+                query_string = urlencode({'page': current_page})
+                return redirect(f"{base_url}?{query_string}")
     except Exception as e:
         pass
+    return redirect('audio', status='processing')
 
 def send_all(request):
     status_url = 'processing'
