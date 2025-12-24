@@ -277,20 +277,27 @@ def send_transcript(request, audio_id = None):
 API_KEY = "9gYFg92M.8G32FkSQTmaOpQt8nOX581qkQPPqh1ps"
 
 def get_transcript(request, audio_id=None):
-    status_url = request.POST.get('status_url')
-    audio = get_object_or_404(Audio, id=audio_id)
+    from django.urls import reverse
+    from urllib.parse import urlencode
     current_page = request.POST.get('page', 1)
+    status_url = request.POST.get('status_url')
+    base_url = reverse('audio', kwargs={'status': status_url})
+    query_string = urlencode({'page': current_page})
+
+
+    audio = get_object_or_404(Audio, id=audio_id)
+
 
     try:
         s2t_request = audio.s2t_request
         print(s2t_request)
     except ObjectDoesNotExist:
         messages.error(request, "STT request topilmadi.")
-        return redirect('audio', status=status_url)
+        return redirect(f"{base_url}?{query_string}")
 
     if not s2t_request.task_id:
         messages.error(request, "Task ID mavjud emas.")
-        return redirect('audio', status=status_url)
+        return redirect(f"{base_url}?{query_string}")
 
     url = f"https://back.aisha.group/api/v2/stt/get/{s2t_request.task_id}/"
     headers = {'x-api-key': API_KEY}
@@ -305,7 +312,7 @@ def get_transcript(request, audio_id=None):
 
         if not transcript:
             messages.warning(request, "Transcript hali tayyor emas.")
-            return redirect('audio', status=status_url)
+            return redirect(f"{base_url}?{query_string}")
 
         # Audio transcript update
         if not audio.transcript:
@@ -324,12 +331,7 @@ def get_transcript(request, audio_id=None):
     except Exception as e:
         messages.error(request, f"Noma’lum xato: {str(e)}")
 
-    # redirect qilishda page parametrini ham qo'shamiz
-    from django.urls import reverse
-    from urllib.parse import urlencode
 
-    base_url = reverse('audio', kwargs={'status': status_url})
-    query_string = urlencode({'page': current_page})
     return redirect(f"{base_url}?{query_string}")
 
 def get_transcript_api(request, task_id=None):
