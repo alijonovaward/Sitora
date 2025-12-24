@@ -150,12 +150,12 @@
     {% endfor %}
 </ul>
 {% if audios.has_other_pages %}
+{% if audios.has_other_pages %}
 <div class="pagination-container">
     <div class="pagination">
         {% if audios.has_previous %}
-            {# Status parametrini saqlab qolgan holda orqaga qaytish #}
-            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page=1">&laquo; birinchi</a>
-            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page={{ audios.previous_page_number }}">oldingi</a>
+            <a href="?page=1{% if status %}&status={{ status }}{% endif %}">&laquo; birinchi</a>
+            <a href="?page={{ audios.previous_page_number }}{% if status %}&status={{ status }}{% endif %}">oldingi</a>
         {% endif %}
 
         <span class="current">
@@ -163,12 +163,12 @@
         </span>
 
         {% if audios.has_next %}
-            {# Status parametrini saqlab qolgan holda keyingi sahifaga o'tish #}
-            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page={{ audios.next_page_number }}">keyingi</a>
-            <a href="{% if status %}{% url 'audio_view' status=status %}{% else %}{% url 'audio_view' %}{% endif %}?page={{ audios.paginator.num_pages }}">oxirgi &raquo;</a>
+            <a href="?page={{ audios.next_page_number }}{% if status %}&status={{ status }}{% endif %}">keyingi</a>
+            <a href="?page={{ audios.paginator.num_pages }}{% if status %}&status={{ status }}{% endif %}">oxirgi &raquo;</a>
         {% endif %}
     </div>
 </div>
+{% endif %}
 {% endif %}
 {% endblock %}
 
