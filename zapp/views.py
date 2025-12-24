@@ -324,13 +324,13 @@ def get_transcript(request, audio_id=None):
     except Exception as e:
         messages.error(request, f"Noma’lum xato: {str(e)}")
 
-        # redirect qilishda page parametrini ham qo'shamiz
-        from django.urls import reverse
-        from urllib.parse import urlencode
+    # redirect qilishda page parametrini ham qo'shamiz
+    from django.urls import reverse
+    from urllib.parse import urlencode
 
-        base_url = reverse('audio', kwargs={'status': status_url})
-        query_string = urlencode({'page': current_page})
-        return redirect(f"{base_url}?{query_string}")
+    base_url = reverse('audio', kwargs={'status': status_url})
+    query_string = urlencode({'page': current_page})
+    return redirect(f"{base_url}?{query_string}")
 
 def get_transcript_api(request, task_id=None):
     data = {
