@@ -260,14 +260,14 @@ def send_transcript(request, audio_id = None):
         data_json = response.json()
         task_id = data_json.get('id')
 
-        s2t_request, created = S2TRequest.objects.create(
+        s2t_request = S2TRequest.objects.create(
             audio=audio,
             defaults={
                 'status': 'pending',
                 'task_id': task_id
             }
         )
-        audio.status = 'processing'
+        audio.status = 'finished'
         audio.save()
 
         return redirect('audio', status=status_url)
