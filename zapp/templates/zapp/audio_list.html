@@ -117,12 +117,14 @@
                         {% csrf_token %}
                         <input type="hidden" name="status" value="approved">
                         <input type="hidden" name="status_url" value="{{ status }}">
+                        <input type="hidden" name="page" value="{{ audios.number }}">
                         <button type="submit" class="status-approved">Approve</button>
                     </form>
                     <form action="{% url 'update_audio_status' audio.id %}" method="post" style="display:inline;">
                         {% csrf_token %}
                         <input type="hidden" name="status" value="rejected">
                         <input type="hidden" name="status_url" value="{{ status }}">
+                        <input type="hidden" name="page" value="{{ audios.number }}">
                         <button type="submit" class="status-rejected">Reject</button>
                     </form>
                     {% if status == 'finished' %}
@@ -130,6 +132,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="status" value="rejected">
                         <input type="hidden" name="status_url" value="{{ status }}">
+                        <input type="hidden" name="page" value="{{ audios.number }}">
                         <button type="submit" class="status-get">Get text</button>
                     </form>
                     {% endif %}
@@ -138,6 +141,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="status" value="rejected">
                         <input type="hidden" name="status_url" value="{{ status }}">
+                        <input type="hidden" name="page" value="{{ audios.number }}">
                         <button type="submit" class="status-send">Send Aisha</button>
                     </form>
                     {% endif %}
