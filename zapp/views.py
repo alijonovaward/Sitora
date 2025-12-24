@@ -36,16 +36,16 @@ def dashboard_view(request):
     user = request.user
     profile = getattr(user, 'profile', None)
 
-    # Agar user oddiy foydalanuvchi bo‘lsa, faqat uning audiolari
-    if profile and profile.user:
-        audios = Audio.objects.filter(audio_author=user).order_by('-created_at')
-    else:
-        audios = Audio.objects.all().order_by('-created_at')
+    # # Agar user oddiy foydalanuvchi bo‘lsa, faqat uning audiolari
+    # if profile and profile.user:
+    #     audios = Audio.objects.filter(audio_author=user).order_by('-created_at')
+    # else:
+    #     audios = Audio.objects.all().order_by('-created_at')
 
     context = {
         'user': user,
         'profile': profile,
-        'audios': audios,
+        'total_audio_duration':profile.total_audio_duration,
     }
     return render(request, "zapp/dashboard.html", context)
 
