@@ -62,6 +62,9 @@ def audio_view(request, status=None):
     if status:
         audios = audios.filter(status=status)
 
+    if request.user.username != "azamjon":
+        audios = audios.exclude(audio_author__username="akhmadovna")
+
     audios = audios.order_by('-created_at')
     total_duration = int(audios.aggregate(total=Sum('duration'))['total'] or 0)
 
