@@ -26,6 +26,12 @@ class AudioAdmin(admin.ModelAdmin):
             )
         return "No audio"
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.username != "azamjon":
+            qs = qs.exclude(audio_author__username="akhmadovna")
+        return qs
+
     audio_player.short_description = "Audio"
 
 @admin.register(S2TRequest)
