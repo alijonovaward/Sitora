@@ -62,7 +62,7 @@ def audio_view(request, status=None):
     if status:
         audios = audios.filter(status=status)
 
-    if request.user.username != "azamjon":
+    if request.user.username not in ["azamjon", "akhmadova"]:
         audios = audios.exclude(audio_author__username="akhmadovna")
 
     audios = audios.order_by('-created_at')
